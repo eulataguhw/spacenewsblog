@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage
+.nyc_output
+
+# Production
+dist
+build
+
+# Environment variables
+.env
+.env.test
+.env.production
+.env.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+pid
+*.pid
+*.seed
+*.pid.lock
+
+# Prisma
+/prisma/migrations/*/migration.sql
+
+# OS
+.DS_Store
+Thumbs.db

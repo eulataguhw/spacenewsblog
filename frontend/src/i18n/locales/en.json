@@ -1,0 +1,13 @@
+{
+  "app": {
+    "title": "SpaceBlog",
+    "description": "Latest news from the space industry"
+  },
+  "search": {
+    "placeholder": "Search articles..."
+  },
+  "articles": {
+    "loadMore": "Load More",
+    "noArticles": "No articles found"
+  }
+}
