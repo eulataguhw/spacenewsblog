@@ -1,6 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query';
-import { apiSlice } from '../api/apiSlice';
+import { configureStore } from "@reduxjs/toolkit";
+// Removed unused articlesApi import
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { apiSlice } from "../api/apiSlice";
 
 export const store = configureStore({
   reducer: {
