@@ -48,7 +48,7 @@ const populateComments = async () => {
     const articles = articlesResponse.data;
 
     if (articles.length === 0) {
-      console.warn("No articles found. Aborting.");
+      console.warn("No articles found.");
       return;
     }
 
@@ -73,7 +73,6 @@ const populateComments = async () => {
         }
       }
     }
-    console.log("Seeding complete!");
     console.log(`Total comments added: ${totalCommentsAdded}`);
   } catch (error) {
     console.error("Error seeding comments:", error);

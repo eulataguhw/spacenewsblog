@@ -38,7 +38,6 @@ export const getArticles = async (
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
-        console.warn(`Request timed out for URL: ${url}`);
         controller.abort();
       }, SPACE_NEWS_API.TIMEOUT);
 
@@ -54,15 +53,10 @@ export const getArticles = async (
 
       if (!response.ok) {
         if (response.status >= 500 && attempts > 1) {
-          console.warn(
-            `Server error ${response.status}. Retrying... (${attempts - 1} attempts left)`,
-          );
           await new Promise((resolve) => setTimeout(resolve, 1000));
           return fetchWithRetry(attempts - 1);
         }
 
-        const text = await response.text();
-        console.error(`API Error Response: ${text}`);
         throw new Error(
           `Space News API error: ${response.status} ${response.statusText}`,
         );
@@ -74,9 +68,7 @@ export const getArticles = async (
       const isRetryable =
         attempts > 1 &&
         error instanceof Error &&
-        (error.name === "TypeError" ||
-          (error as any).code === "ECONNRESET" ||
-          error.name === "AbortError");
+        (error.name === "TypeError" || (error as any).code === "ECONNRESET");
 
       if (isRetryable) {
         console.warn(

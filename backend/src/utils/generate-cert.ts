@@ -16,8 +16,6 @@ const attrs = [{ name: "commonName", value: "localhost" }];
 
     fs.writeFileSync(path.join(certDir, "localhost.crt"), pems.cert);
     fs.writeFileSync(path.join(certDir, "localhost.key"), pems.private);
-
-    console.log("SSL certificates generated in " + certDir);
   } catch (error) {
     console.error("Error generating certificates:", error);
     process.exit(1);

@@ -17,10 +17,6 @@ import analyticsRoutes from "./routes/analyticsRoutes";
 app.use(cors());
 app.use(bodyParser.json());
 app.use((req, res, next) => {
-  console.log(`[DEBUG] ${req.method} ${req.url}`);
-  if (req.method === "POST" || req.method === "PUT") {
-    console.log(`[DEBUG] Body present: ${!!req.body}`);
-  }
   next();
 });
 
