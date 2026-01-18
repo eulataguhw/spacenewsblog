@@ -3,10 +3,6 @@ Spacenews Blog Project
 
 Before running the projects
 
-ensure that SSL certs are in ./cert/ at the same hierarchy as backend and frontend, otherwise update vite.config and server.ts.
-
-copy .env.frontend and .env.backend to its respective root folder and remove .frontend and .backend
-
 npm i -f (for both projects)
 
 backend: npx prisma generate
