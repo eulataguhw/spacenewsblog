@@ -1,19 +1,31 @@
 import prisma from "../utils/prismaClient";
-import spaceNewsApiService from "./spaceNewsApiService";
+import * as spaceNewsApiService from "./spaceNewsApiService";
 
 export const getAllArticles = async (
   page: number = 1,
   limit: number = 20,
   search?: string,
+  startDate?: string,
+  endDate?: string,
+  sort: string = "-published_at",
 ) => {
   const offset = (page - 1) * limit;
+
+  // Map frontend sort order to Space News API ordering format
+  const sortMap: Record<string, string> = {
+    "published_at:desc": "-published_at",
+    "published_at:asc": "published_at",
+  };
+  const ordering = sortMap[sort] || sort;
 
   try {
     const response = await spaceNewsApiService.getArticles({
       limit,
       offset,
       search,
-      ordering: "-published_at", // Sort by published date descending
+      published_at_gte: startDate,
+      published_at_lte: endDate,
+      ordering,
     });
 
     return {

@@ -1,6 +1,27 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { FilterBar } from "@components/molecules/FilterBar/FilterBar";
+import dayjs from "dayjs";
 import { useAppStore } from "@store/useAppStore";
+
+vi.mock("@mui/x-date-pickers/DatePicker", () => ({
+  DatePicker: ({ label, value, onChange }: any) => (
+    <div data-testid="mock-date-picker">
+      <label htmlFor={label}>{label}</label>
+      <input
+        id={label}
+        type="text"
+        value={value ? value.format("YYYY-MM-DD") : ""}
+        onChange={(e) => {
+          const val = e.target.value;
+          onChange(val ? dayjs(val) : null);
+        }}
+        aria-label={label}
+      />
+    </div>
+  ),
+}));
 
 // Mock useAppStore
 vi.mock("@store/useAppStore", () => ({
@@ -8,11 +29,11 @@ vi.mock("@store/useAppStore", () => ({
 }));
 
 describe("FilterBar", () => {
-  console.log("EXECUTING LATEST FILTERBAR TEST");
   const mockSetSearchQuery = vi.fn();
   const mockSetStartDate = vi.fn();
   const mockSetEndDate = vi.fn();
   const mockSetSortOrder = vi.fn();
+  const mockSetPage = vi.fn();
 
   beforeEach(() => {
     vi.mocked(useAppStore).mockReturnValue({
@@ -24,31 +45,43 @@ describe("FilterBar", () => {
       setEndDate: mockSetEndDate,
       sortOrder: "published_at:desc",
       setSortOrder: mockSetSortOrder,
+      page: 1,
+      setPage: mockSetPage,
     } as any);
   });
 
+  const renderFilterBar = () =>
+    render(
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <FilterBar />
+      </LocalizationProvider>,
+    );
+
   it("renders all filter inputs", () => {
-    render(<FilterBar />);
+    renderFilterBar();
     expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Start Date/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/End Date/i)).toBeInTheDocument();
 
-    // MUI Select uses a div with role="combobox" that displays the selected value.
-    // It should have the correct accessible name using the linked InputLabel.
     const sortSelect = screen.getByRole("combobox", { name: /Sort By/i });
     expect(sortSelect).toBeInTheDocument();
     expect(sortSelect).toHaveTextContent(/Newest First/i);
   });
 
   it("calls date change handlers", () => {
-    render(<FilterBar />);
+    renderFilterBar();
     const startDateInput = screen.getByLabelText(/Start Date/i);
     const endDateInput = screen.getByLabelText(/End Date/i);
 
     fireEvent.change(startDateInput, { target: { value: "2023-01-01" } });
     fireEvent.change(endDateInput, { target: { value: "2023-12-31" } });
 
-    expect(mockSetStartDate).toHaveBeenCalledWith("2023-01-01");
-    expect(mockSetEndDate).toHaveBeenCalledWith("2023-12-31");
+    // useController formats it as "YYYY-MM-DDTHH:mm:ss"
+    expect(mockSetStartDate).toHaveBeenCalledWith(
+      expect.stringContaining("2023-01-01T"),
+    );
+    expect(mockSetEndDate).toHaveBeenCalledWith(
+      expect.stringContaining("2023-12-31T"),
+    );
   });
 });

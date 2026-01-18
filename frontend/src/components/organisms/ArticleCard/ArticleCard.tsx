@@ -1,12 +1,6 @@
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Chip,
-  Stack,
-} from "@mui/material";
+import { Card, CardContent, CardMedia, Chip, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Typography } from "@components/atoms/Typography/Typography";
 import { Article } from "@app-types/article";
 import { useController } from "./useController";
 import { useModel } from "./useModel";
@@ -20,11 +14,19 @@ const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+  background: "rgba(15, 23, 42, 0.4)",
+  backdropFilter: "blur(12px)",
+  border: "1px solid rgba(255, 255, 255, 0.05)",
+  borderRadius: theme.shape.borderRadius,
+  transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
   cursor: "pointer",
+  overflow: "hidden",
   "&:hover": {
-    transform: "translateY(-4px)",
-    boxShadow: theme.shadows[8],
+    transform: "translateY(-8px) scale(1.02)",
+    background: "rgba(15, 23, 42, 0.6)",
+    borderColor: "rgba(6, 182, 212, 0.5)",
+    boxShadow:
+      "0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(6, 182, 212, 0.2)",
   },
 }));
 

@@ -1,12 +1,12 @@
-import { Container, Box, Typography } from "@mui/material";
+import { Container, Box } from "@mui/material";
+import { Typography } from "@components/atoms/Typography/Typography";
 import { ArticleFeed } from "@components/templates/ArticleFeed/ArticleFeed";
-import { SearchBar } from "@components/molecules/SearchBar/SearchBar";
-import { useController } from "./useController";
+import { EngagementMetrics } from "@components/organisms/EngagementMetrics/EngagementMetrics";
 import { HOME_CONSTANTS } from "./constants";
 
-const Home = () => {
-  const { setSearchQuery } = useController();
+import { ThemeSelector } from "@components/atoms/ThemeSelector/ThemeSelector";
 
+const Home = () => {
   return (
     <Container maxWidth="lg">
       <Box py={4}>
@@ -21,14 +21,14 @@ const Home = () => {
           <Typography variant="h4" component="h1" fontWeight="bold">
             {HOME_CONSTANTS.TITLE}
           </Typography>
-          <Box width={{ xs: "100%", sm: 300 }}>
-            <SearchBar
-              onSearch={setSearchQuery}
-              placeholder={HOME_CONSTANTS.SEARCH_PLACEHOLDER}
-            />
-          </Box>
+          <ThemeSelector />
         </Box>
-        <ArticleFeed />
+
+        <EngagementMetrics />
+
+        <Box mt={4}>
+          <ArticleFeed />
+        </Box>
       </Box>
     </Container>
   );

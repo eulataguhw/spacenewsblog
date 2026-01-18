@@ -1,9 +1,10 @@
 import express from "express";
 import cors from "cors";
+import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import https from "https";
-import fs from "fs";
-import path from "path";
+import https from "node:https";
+import fs from "node:fs";
+import path from "node:path";
 
 dotenv.config();
 
@@ -11,11 +12,20 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 import articleRoutes from "./routes/articleRoutes";
+import analyticsRoutes from "./routes/analyticsRoutes";
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use((req, res, next) => {
+  console.log(`[DEBUG] ${req.method} ${req.url}`);
+  if (req.method === "POST" || req.method === "PUT") {
+    console.log(`[DEBUG] Body present: ${!!req.body}`);
+  }
+  next();
+});
 
 app.use("/api/articles", articleRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.get("/", (req, res) => {
   res.send("SpaceBlog Backend API");

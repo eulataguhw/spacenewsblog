@@ -23,7 +23,7 @@ export const articlesApi = apiSlice.injectEndpoints({
         sort = "published_at:desc",
       }) => {
         const params: any = { page, limit, _sort: sort };
-        if (search) params.title_contains = search;
+        if (search) params.search = search;
         if (startDate) params.published_at_gte = startDate;
         if (endDate) params.published_at_lte = endDate;
 
@@ -43,18 +43,23 @@ export const articlesApi = apiSlice.injectEndpoints({
           currentCache.data = newItems.data;
           currentCache.meta = newItems.meta;
         } else {
-          // Otherwise, append to existing data
-          currentCache.data.push(...newItems.data);
+          // Otherwise, append to existing data, filtering out duplicates
+          const existingIds = new Set(currentCache.data.map((a) => a.id));
+          const uniqueNewItems = newItems.data.filter(
+            (a) => !existingIds.has(a.id),
+          );
+          currentCache.data.push(...uniqueNewItems);
           currentCache.meta = newItems.meta;
         }
       },
       forceRefetch({ currentArg, previousArg }) {
         return (
-          currentArg?.page !== previousArg?.page ||
-          currentArg?.search !== previousArg?.search ||
-          currentArg?.startDate !== previousArg?.startDate ||
-          currentArg?.endDate !== previousArg?.endDate ||
-          currentArg?.sort !== previousArg?.sort
+          !!previousArg &&
+          (currentArg?.page !== previousArg?.page ||
+            currentArg?.search !== previousArg?.search ||
+            currentArg?.startDate !== previousArg?.startDate ||
+            currentArg?.endDate !== previousArg?.endDate ||
+            currentArg?.sort !== previousArg?.sort)
         );
       },
       providesTags: (result) =>
@@ -72,40 +77,7 @@ export const articlesApi = apiSlice.injectEndpoints({
       query: (id) => `/articles/${id}`,
       providesTags: (result, error, id) => [{ type: "Article", id }],
     }),
-    syncArticles: builder.mutation({
-      query: () => ({
-        url: "/articles/sync",
-        method: "POST",
-      }),
-      invalidatesTags: [{ type: "Article", id: "LIST" }],
-    }),
-    getComments: builder.query({
-      query: ({ articleId, page = 1, limit = 20 }) => ({
-        url: `/articles/${articleId}/comments`,
-        params: { page, limit },
-      }),
-      providesTags: (result, error, { articleId }) => [
-        { type: "Comment", id: `LIST_${articleId}` },
-      ],
-    }),
-    createComment: builder.mutation({
-      query: ({ articleId, body }) => ({
-        url: `/articles/${articleId}/comments`,
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: (result, error, { articleId }) => [
-        { type: "Comment", id: `LIST_${articleId}` },
-        { type: "Article", id: articleId }, // Invalidate article to update comment count if we had it
-      ],
-    }),
   }),
 });
 
-export const {
-  useGetArticlesQuery,
-  useGetArticleQuery,
-  useSyncArticlesMutation,
-  useGetCommentsQuery,
-  useCreateCommentMutation,
-} = articlesApi;
+export const { useGetArticlesQuery, useGetArticleQuery } = articlesApi;

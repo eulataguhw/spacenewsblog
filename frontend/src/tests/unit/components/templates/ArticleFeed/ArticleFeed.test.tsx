@@ -4,6 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 import * as ArticlesApi from "@api/articlesApi";
 import * as AppStore from "@store/useAppStore";
 
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 vi.mock("@api/articlesApi", () => ({
   useGetArticlesQuery: vi.fn(),
 }));
@@ -12,8 +15,16 @@ vi.mock("@store/useAppStore", () => ({
   useAppStore: vi.fn(),
 }));
 
+vi.mock("@components/molecules/FilterBar", () => ({
+  FilterBar: () => <div data-testid="filter-bar">FilterBar</div>,
+}));
+
 const renderWithRouter = (ui: React.ReactElement) => {
-  return render(<BrowserRouter>{ui}</BrowserRouter>);
+  return render(
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <BrowserRouter>{ui}</BrowserRouter>
+    </LocalizationProvider>,
+  );
 };
 
 describe("ArticleFeed", () => {
@@ -27,6 +38,9 @@ describe("ArticleFeed", () => {
       setEndDate: vi.fn(),
       sortOrder: "published_at:desc",
       setSortOrder: vi.fn(),
+      page: 1,
+      setPage: vi.fn(),
+      addArticles: vi.fn(),
     } as any);
   });
 

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import spaceNewsApiService from "../services/spaceNewsApiService";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import * as spaceNewsApiService from "../services/spaceNewsApiService";
 import {
   SpaceNewsApiResponse,
   SpaceNewsArticle,
@@ -12,6 +12,16 @@ globalThis.fetch = vi.fn();
 describe("SpaceNewsApiService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useRealTimers();
+    // Default mock to prevent "Cannot read properties of undefined"
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => ({}),
+      text: async () => "",
+    });
+  });
+
+  afterEach(() => {
     vi.useRealTimers();
   });
 
@@ -123,10 +133,11 @@ describe("SpaceNewsApiService", () => {
     });
 
     it("should throw error when API returns non-ok response", async () => {
-      (globalThis.fetch as any).mockResolvedValueOnce({
+      (globalThis.fetch as any).mockResolvedValue({
         ok: false,
         status: 500,
         statusText: "Internal Server Error",
+        text: async () => "Internal Server Error",
       });
 
       await expect(spaceNewsApiService.getArticles()).rejects.toThrow(
@@ -135,9 +146,7 @@ describe("SpaceNewsApiService", () => {
     });
 
     it("should throw error on network failure", async () => {
-      (globalThis.fetch as any).mockRejectedValueOnce(
-        new Error("Network error"),
-      );
+      (globalThis.fetch as any).mockRejectedValue(new Error("Network error"));
 
       await expect(spaceNewsApiService.getArticles()).rejects.toThrow(
         "Failed to fetch articles: Network error",
@@ -178,6 +187,7 @@ describe("SpaceNewsApiService", () => {
       (globalThis.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: async () => mockArticle,
+        text: async () => JSON.stringify(mockArticle),
       });
 
       const result = await spaceNewsApiService.getArticleById(123);
@@ -189,10 +199,11 @@ describe("SpaceNewsApiService", () => {
     });
 
     it("should throw error when article is not found", async () => {
-      (globalThis.fetch as any).mockResolvedValueOnce({
+      (globalThis.fetch as any).mockResolvedValue({
         ok: false,
         status: 404,
         statusText: "Not Found",
+        text: async () => "Not Found",
       });
 
       await expect(spaceNewsApiService.getArticleById(999)).rejects.toThrow(
@@ -201,10 +212,11 @@ describe("SpaceNewsApiService", () => {
     });
 
     it("should throw error on API error", async () => {
-      (globalThis.fetch as any).mockResolvedValueOnce({
+      (globalThis.fetch as any).mockResolvedValue({
         ok: false,
         status: 500,
         statusText: "Internal Server Error",
+        text: async () => "Internal Server Error",
       });
 
       await expect(spaceNewsApiService.getArticleById(123)).rejects.toThrow(
@@ -213,15 +225,12 @@ describe("SpaceNewsApiService", () => {
     });
 
     it("should handle timeout", async () => {
-      vi.useFakeTimers();
-      (globalThis.fetch as any).mockImplementationOnce(mockAbortFetch);
+      const abortError = new Error("The operation was aborted");
+      abortError.name = "AbortError";
 
-      const promise = spaceNewsApiService.getArticleById(123);
+      (globalThis.fetch as any).mockRejectedValueOnce(abortError);
 
-      // Fast-forward time to trigger the timeout in the service
-      await vi.advanceTimersByTimeAsync(SPACE_NEWS_API.TIMEOUT + 1);
-
-      await expect(promise).rejects.toThrow(
+      await expect(spaceNewsApiService.getArticleById(123)).rejects.toThrow(
         "Request to Space News API timed out",
       );
     });

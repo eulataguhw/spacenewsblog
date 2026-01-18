@@ -1,4 +1,4 @@
-import spaceNewsApiService from "../services/spaceNewsApiService";
+import * as spaceNewsApiService from "../services/spaceNewsApiService";
 import * as articleService from "../services/articleService";
 
 /**

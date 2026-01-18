@@ -5,6 +5,6 @@ export const SPACE_NEWS_API = {
     BLOGS: "/blogs",
     REPORTS: "/reports",
   },
-  TIMEOUT: 10000, // 10 seconds
+  TIMEOUT: 15000, // 15 seconds
   DEFAULT_LIMIT: 20,
 } as const;

@@ -3,6 +3,8 @@ import { styled } from "@mui/material/styles";
 import { ButtonProps, useModel } from "./useModel";
 import { BUTTON_CONSTANTS } from "./constants";
 
+import { Typography } from "@components/atoms/Typography/Typography";
+
 const StyledButton = styled(MuiButton, {
   shouldForwardProp: (prop) => prop !== "rounded",
 })<ButtonProps>(({ theme, rounded }) => ({
@@ -14,5 +16,11 @@ const StyledButton = styled(MuiButton, {
 
 export const Button = (props: ButtonProps) => {
   const model = useModel(props);
-  return <StyledButton {...model}>{model.children}</StyledButton>;
+  return (
+    <StyledButton {...model}>
+      <Typography variant="inherit" component="span">
+        {model.children}
+      </Typography>
+    </StyledButton>
+  );
 };

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import * as articleService from "../services/articleService";
-import spaceNewsApiService from "../services/spaceNewsApiService";
+import * as spaceNewsApiService from "../services/spaceNewsApiService";
 import prisma from "../utils/prismaClient";
 import type { SpaceNewsApiResponse } from "../types/spaceNewsTypes";
 
@@ -141,6 +141,26 @@ describe("ArticleService", () => {
       );
     });
 
+    it("should handle non-Error rejections", async () => {
+      vi.mocked(spaceNewsApiService.getArticles).mockRejectedValueOnce(
+        "Unexpected error string",
+      );
+
+      await expect(articleService.getAllArticles(1, 20)).rejects.toThrow(
+        "Failed to fetch articles from Space News API",
+      );
+    });
+
+    it("should rethrow TypeError", async () => {
+      vi.mocked(spaceNewsApiService.getArticles).mockRejectedValueOnce(
+        new TypeError("Type Error"),
+      );
+
+      await expect(articleService.getAllArticles(1, 20)).rejects.toThrow(
+        TypeError,
+      );
+    });
+
     it("should transform published_at to Date object", async () => {
       const mockApiResponse: SpaceNewsApiResponse = {
         count: 1,
@@ -251,6 +271,16 @@ describe("ArticleService", () => {
 
       await expect(articleService.getArticleById("123")).rejects.toThrow(
         "API Error",
+      );
+    });
+
+    it("should handle non-Error rejections in getArticleById", async () => {
+      vi.mocked(spaceNewsApiService.getArticleById).mockRejectedValueOnce(
+        "Unexpected error string",
+      );
+
+      await expect(articleService.getArticleById("123")).rejects.toThrow(
+        "Failed to fetch article from Space News API",
       );
     });
 

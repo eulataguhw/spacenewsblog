@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+import { useCallback } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import { useModel } from "./useModel";
 
@@ -13,21 +15,33 @@ export const useController = () => {
     setSortOrder,
   } = useModel();
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+  const handleSearch = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+    },
+    [setSearchQuery],
+  );
 
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartDate(e.target.value || null);
-  };
+  const handleStartDateChange = useCallback(
+    (date: Dayjs | null) => {
+      setStartDate(date ? date.format("YYYY-MM-DDTHH:mm:ss") : null);
+    },
+    [setStartDate],
+  );
 
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(e.target.value || null);
-  };
+  const handleEndDateChange = useCallback(
+    (date: Dayjs | null) => {
+      setEndDate(date ? date.format("YYYY-MM-DDTHH:mm:ss") : null);
+    },
+    [setEndDate],
+  );
 
-  const handleSortChange = (e: SelectChangeEvent) => {
-    setSortOrder(e.target.value as "published_at:desc" | "published_at:asc");
-  };
+  const handleSortChange = useCallback(
+    (e: SelectChangeEvent) => {
+      setSortOrder(e.target.value as "published_at:desc" | "published_at:asc");
+    },
+    [setSortOrder],
+  );
 
   return {
     searchQuery,

@@ -3,11 +3,49 @@
     "title": "SpaceBlog",
     "description": "Latest news from the space industry"
   },
+  "home": {
+    "title": "Latest News",
+    "searchPlaceholder": "Search articles..."
+  },
   "search": {
     "placeholder": "Search articles..."
   },
+  "filterBar": {
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "sortBy": "Sort By",
+    "sortOptions": {
+      "newestFirst": "Newest First",
+      "oldestFirst": "Oldest First"
+    }
+  },
+  "commentForm": {
+    "title": "Post a Comment",
+    "usernameLabel": "Username",
+    "commentLabel": "Comment",
+    "submitButton": "Post Comment",
+    "submittingButton": "Posting...",
+    "validation": {
+      "usernameRequired": "Username must be at least 3 characters",
+      "commentRequired": "Comment must be at least 10 characters",
+      "commentMaxLength": "Comment must not exceed 500 characters"
+    }
+  },
+  "commentSection": {
+    "title": "Comments ({{count}})",
+    "noComments": "No comments yet. Be the first to share your thoughts!"
+  },
+  "engagementMetrics": {
+    "title": "Community Pulse",
+    "topArticles": "Top Articles",
+    "topCommenters": "Top Contributors",
+    "activity": "Daily Activity",
+    "avgComments": "Avg Comments/Day"
+  },
   "articles": {
     "loadMore": "Load More",
-    "noArticles": "No articles found"
+    "noArticles": "No articles found",
+    "readMore": "Read More",
+    "error": "Failed to load articles."
   }
 }

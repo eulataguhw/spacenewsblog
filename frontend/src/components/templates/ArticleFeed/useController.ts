@@ -1,32 +1,18 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useRef, useCallback } from "react";
+import { useAppStore } from "@store/useAppStore";
 import { useModel } from "./useModel";
-import { ARTICLE_FEED_CONSTANTS } from "./constants";
 // Removed unused imports
 
 export const useController = () => {
-  const [page, setPage] = useState(ARTICLE_FEED_CONSTANTS.INITIAL_PAGE);
-  const {
-    articles,
-    meta,
-    error,
-    isLoading,
-    isFetching,
-    searchQuery,
-    startDate,
-    endDate,
-    sortOrder,
-  } = useModel(page);
+  const { page, setPage } = useAppStore();
 
-  // Reset page when any filter changes
-  useEffect(() => {
-    setPage(ARTICLE_FEED_CONSTANTS.INITIAL_PAGE);
-  }, [searchQuery, startDate, endDate, sortOrder]);
+  const { articles, meta, error, isLoading, isFetching } = useModel(page);
 
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastArticleElementRef = useCallback(
     (node: HTMLDivElement) => {
-      if (isLoading || isFetching) return;
+      if (isLoading || isFetching || error) return;
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
@@ -37,7 +23,7 @@ export const useController = () => {
 
       if (node) observer.current.observe(node);
     },
-    [isLoading, isFetching, meta, page],
+    [isLoading, isFetching, meta, page, error],
   );
 
   return {
