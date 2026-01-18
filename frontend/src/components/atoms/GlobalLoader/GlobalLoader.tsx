@@ -1,9 +1,10 @@
 import { Backdrop, CircularProgress } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "@store/store";
+import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 
 export const GlobalLoader = () => {
-  const isLoading = useSelector((state: RootState) => state.ui.isLoading);
+  const isFetching = useIsFetching();
+  const isMutating = useIsMutating();
+  const isLoading = isFetching > 0 || isMutating > 0;
 
   return (
     <Backdrop

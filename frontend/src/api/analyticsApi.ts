@@ -1,13 +1,11 @@
-import { apiSlice } from "./apiSlice";
+import { useQuery } from "@tanstack/react-query";
+import { client } from "./client";
 
 export interface AnalyticsData {
   topArticles: {
     articleId: string;
     commentCount: number;
-    title?: string; // Frontend might need to fetch title separately or backend provides it?
-    // Backend service only returns articleId and count based on aggregation.
-    // For now we display ID, or ideally backend should include title.
-    // Based on analyticsService.ts, it maps manual objects.
+    title?: string;
   }[];
   topCommenters: {
     username: string;
@@ -16,13 +14,14 @@ export interface AnalyticsData {
   averageCommentsPerDay: number;
 }
 
-export const analyticsApi = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getAnalytics: builder.query<AnalyticsData, void>({
-      query: () => "/analytics",
-      providesTags: ["Comment"], // Invalidating "Comment" should refetch analytics potentially?
-    }),
-  }),
-});
+export const getAnalytics = async () => {
+  return client("/analytics");
+};
 
-export const { useGetAnalyticsQuery } = analyticsApi;
+export const useGetAnalyticsQuery = () => {
+  return useQuery({
+    queryKey: ["analytics"],
+    queryFn: getAnalytics,
+    // Add any specific options here if needed, e.g. refetch intervals
+  });
+};

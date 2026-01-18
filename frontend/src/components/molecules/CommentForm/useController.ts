@@ -16,7 +16,8 @@ export type CommentFormValues = z.infer<typeof baseSchema>;
 
 export const useController = (articleId: string) => {
   const { t: translation } = useTranslation();
-  const [createComment, { isLoading }] = useCreateCommentMutation();
+  const { mutateAsync: createComment, isPending: isLoading } =
+    useCreateCommentMutation();
 
   const commentSchema = z.object({
     username: z
@@ -50,7 +51,7 @@ export const useController = (articleId: string) => {
         articleId,
         username: data.username,
         comment: data.comment,
-      }).unwrap();
+      });
       reset();
     } catch (error) {
       console.error("Failed to post comment:", error);

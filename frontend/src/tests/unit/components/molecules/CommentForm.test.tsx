@@ -5,6 +5,13 @@ import * as useControllerModule from "@components/molecules/CommentForm/useContr
 
 vi.mock("@components/molecules/CommentForm/useController");
 
+// Mock react-i18next
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
 describe("CommentForm", () => {
   const mockHandleSubmit = vi.fn((fn) => (e: any) => {
     e?.preventDefault?.();
@@ -35,10 +42,14 @@ describe("CommentForm", () => {
 
   it("should render username and comment fields", () => {
     render(<CommentForm articleId="1" />);
-    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/comment/i)).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /post comment/i }),
+      screen.getByLabelText(/commentForm\.usernameLabel/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/commentForm\.commentLabel/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /commentForm\.submitButton/i }),
     ).toBeInTheDocument();
   });
 
@@ -75,7 +86,7 @@ describe("CommentForm", () => {
 
     render(<CommentForm articleId="1" />);
     expect(
-      screen.getByRole("button", { name: /post comment/i }),
+      screen.getByRole("button", { name: /commentForm\.submitButton/i }),
     ).toBeDisabled();
 
     vi.mocked(useControllerModule.useController).mockReturnValue({
@@ -85,6 +96,8 @@ describe("CommentForm", () => {
     } as any);
 
     render(<CommentForm articleId="1" />);
-    expect(screen.getByRole("button", { name: /posting/i })).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: /commentForm\.submittingButton/i }),
+    ).toBeDisabled();
   });
 });

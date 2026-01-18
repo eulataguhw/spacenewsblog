@@ -61,7 +61,7 @@ export const getEngagementMetrics = async () => {
         return {
           articleId: a.article_id,
           commentCount: a._count.id,
-          title: "Unknown Article",
+          title: `Article #${a.article_id}`,
         };
       }
     }),

@@ -14,6 +14,13 @@ const renderWithRouter = (component: React.ReactNode) => {
 };
 
 describe("ArticleDetail Page", () => {
+  // Mock react-i18next
+  vi.mock("react-i18next", () => ({
+    useTranslation: () => ({
+      t: (key: string) => key,
+    }),
+  }));
+
   const mockHandleBackClick = vi.fn();
   const mockArticle = {
     id: "1",

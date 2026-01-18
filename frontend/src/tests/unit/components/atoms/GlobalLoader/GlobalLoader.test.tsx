@@ -1,32 +1,47 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { GlobalLoader } from "@components/atoms/GlobalLoader/GlobalLoader";
-import * as reactRedux from "react-redux";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import * as ReactQuery from "@tanstack/react-query";
 
-vi.mock("react-redux", () => ({
-  useSelector: vi.fn(),
-}));
+vi.mock("@tanstack/react-query", async () => {
+  const actual = await vi.importActual("@tanstack/react-query");
+  return {
+    ...actual,
+    useIsFetching: vi.fn(),
+    useIsMutating: vi.fn(),
+  };
+});
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false },
+    mutations: { retry: false },
+  },
+});
+
+const renderWithQueryClient = (ui: React.ReactElement) => {
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
+  );
+};
 
 describe("GlobalLoader", () => {
   it("should not render when isLoading is false", () => {
-    vi.mocked(reactRedux.useSelector).mockReturnValue(false);
-    render(<GlobalLoader />);
+    vi.mocked(ReactQuery.useIsFetching).mockReturnValue(0);
+    vi.mocked(ReactQuery.useIsMutating).mockReturnValue(0);
 
-    // Backdrop usually has MuiBackdrop-root class or we can check opacity.
-    // Ideally we check visibility. The CircularProgress is inside.
-    // When open=false, Backdrop typically keeps children but hidden or unmounted?
-    // MUI Backdrop with open=false has visibility: hidden.
-    // But testing-library might still find it in DOM.
-    // Let's check visible property if possible or style.
-    // Actually, MUI Backdrop "unmountOnExit" is default? No.
-    // Let's check visibility.
-    // However, basic check: ensure call to useSelector was correct.
-    expect(reactRedux.useSelector).toHaveBeenCalled();
+    renderWithQueryClient(<GlobalLoader />);
+
+    expect(ReactQuery.useIsFetching).toHaveBeenCalled();
+    expect(ReactQuery.useIsMutating).toHaveBeenCalled();
   });
 
   it("should render when isLoading is true", () => {
-    vi.mocked(reactRedux.useSelector).mockReturnValue(true);
-    render(<GlobalLoader />);
+    vi.mocked(ReactQuery.useIsFetching).mockReturnValue(1);
+    vi.mocked(ReactQuery.useIsMutating).mockReturnValue(0);
+
+    renderWithQueryClient(<GlobalLoader />);
     expect(
       screen.getByRole("progressbar", { hidden: true }),
     ).toBeInTheDocument();

@@ -14,7 +14,7 @@ export const useModel = () => {
     data: fetchedArticle,
     isLoading: isArticleLoading,
     isError: isArticleError,
-  } = useGetArticleQuery(id || "", { skip: !id || !!cachedArticle });
+  } = useGetArticleQuery(id || "", { enabled: !cachedArticle && !!id });
 
   const article = cachedArticle || fetchedArticle;
 
@@ -29,7 +29,7 @@ export const useModel = () => {
     data: commentsData,
     isLoading: isCommentsLoading,
     isFetching: isCommentsFetching,
-  } = useGetCommentsQuery({ articleId: id || "" }, { skip: !id });
+  } = useGetCommentsQuery({ articleId: id || "" });
 
   return {
     id,

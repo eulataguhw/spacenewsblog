@@ -12,8 +12,41 @@ vi.mock("@api/articlesApi", () => ({
 }));
 
 vi.mock("@store/useAppStore", () => ({
-  useAppStore: vi.fn(),
+  useAppStore: vi.fn(() => ({
+    searchQuery: "",
+    setSearchQuery: vi.fn(),
+    startDate: null,
+    setStartDate: vi.fn(),
+    endDate: null,
+    setEndDate: vi.fn(),
+    sortOrder: "published_at:desc",
+    setSortOrder: vi.fn(),
+    page: 1,
+    setPage: vi.fn(),
+    addArticles: vi.fn(),
+    articles: {},
+    addArticle: vi.fn(),
+  })),
 }));
+
+// Add getState to the mock
+Object.assign(vi.mocked((await import("@store/useAppStore")).useAppStore), {
+  getState: () => ({
+    searchQuery: "",
+    setSearchQuery: vi.fn(),
+    startDate: null,
+    setStartDate: vi.fn(),
+    endDate: null,
+    setEndDate: vi.fn(),
+    sortOrder: "published_at:desc",
+    setSortOrder: vi.fn(),
+    page: 1,
+    setPage: vi.fn(),
+    addArticles: vi.fn(),
+    articles: {},
+    addArticle: vi.fn(),
+  }),
+});
 
 vi.mock("@components/molecules/FilterBar", () => ({
   FilterBar: () => <div data-testid="filter-bar">FilterBar</div>,
@@ -60,20 +93,28 @@ describe("ArticleFeed", () => {
   it("renders articles when data is available", () => {
     vi.mocked(ArticlesApi.useGetArticlesQuery).mockReturnValue({
       data: {
-        data: [
+        pages: [
           {
-            id: "1",
-            title: "Test Article 1",
-            published_at: "2023-01-01",
-            source: "Source",
-            created_at: "2023-01-01",
-            updated_at: "2023-01-01",
+            data: [
+              {
+                id: "1",
+                title: "Test Article 1",
+                published_at: "2023-01-01",
+                source: "Source",
+                created_at: "2023-01-01",
+                updated_at: "2023-01-01",
+              },
+            ],
+            meta: { total: 1, page: 1, limit: 12, totalPages: 1 },
           },
         ],
-        meta: { total: 1, page: 1, limit: 12, totalPages: 1 },
+        pageParams: [1],
       },
       isLoading: false,
       isFetching: false,
+      hasNextPage: false,
+      fetchNextPage: vi.fn(),
+      isFetchingNextPage: false,
       error: null,
       refetch: vi.fn(),
     } as any);
@@ -98,11 +139,19 @@ describe("ArticleFeed", () => {
   it("renders empty state when no articles are found", () => {
     vi.mocked(ArticlesApi.useGetArticlesQuery).mockReturnValue({
       data: {
-        data: [],
-        meta: { total: 0, page: 1, limit: 12, totalPages: 0 },
+        pages: [
+          {
+            data: [],
+            meta: { total: 0, page: 1, limit: 12, totalPages: 0 },
+          },
+        ],
+        pageParams: [1],
       },
       isLoading: false,
       isFetching: false,
+      hasNextPage: false,
+      fetchNextPage: vi.fn(),
+      isFetchingNextPage: false,
       error: null,
       refetch: vi.fn(),
     } as any);
@@ -117,24 +166,32 @@ describe("ArticleFeed", () => {
 
     vi.mocked(ArticlesApi.useGetArticlesQuery).mockReturnValue({
       data: {
-        data: [
+        pages: [
           {
-            id: "1",
-            title: "Article 1",
-            published_at: "2023-01-01",
-            source: "Source",
-          },
-          {
-            id: "2",
-            title: "Article 2",
-            published_at: "2023-01-01",
-            source: "Source",
+            data: [
+              {
+                id: "1",
+                title: "Article 1",
+                published_at: "2023-01-01",
+                source: "Source",
+              },
+              {
+                id: "2",
+                title: "Article 2",
+                published_at: "2023-01-01",
+                source: "Source",
+              },
+            ],
+            meta: { total: 2, page: 1, limit: 12, totalPages: 2 },
           },
         ],
-        meta: { total: 2, page: 1, limit: 12, totalPages: 2 },
+        pageParams: [1],
       },
       isLoading: false,
       isFetching: false,
+      hasNextPage: true,
+      fetchNextPage: vi.fn(),
+      isFetchingNextPage: false,
       error: null,
       refetch: vi.fn(),
     } as any);

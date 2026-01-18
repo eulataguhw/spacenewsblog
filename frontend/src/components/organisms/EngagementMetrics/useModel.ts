@@ -7,13 +7,7 @@ import { ENGAGEMENT_METRICS_KEYS } from "./constants";
 export const useModel = () => {
   const { t: translation } = useTranslation();
   const cachedArticles = useAppStore((state) => state.articles);
-  const {
-    data: rawMetrics,
-    isLoading,
-    error,
-  } = useGetAnalyticsQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: rawMetrics, isLoading, error } = useGetAnalyticsQuery();
 
   const title = translation(ENGAGEMENT_METRICS_KEYS.TITLE);
 

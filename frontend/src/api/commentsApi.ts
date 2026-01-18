@@ -1,4 +1,5 @@
-import { apiSlice } from "./apiSlice";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { client } from "./client";
 
 export interface Comment {
   id: string;
@@ -24,38 +25,46 @@ export interface CreateCommentRequest {
   comment: string;
 }
 
-export const commentsApi = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getComments: builder.query<
-      GetCommentsResponse,
-      { articleId: string; page?: number; limit?: number }
-    >({
-      query: ({ articleId, ...params }) => ({
-        url: `/articles/${articleId}/comments`,
-        params,
-      }),
-      providesTags: (result, _error, { articleId }) =>
-        result
-          ? [
-              ...result.data.map(({ id }) => ({
-                type: "Comment" as const,
-                id,
-              })),
-              { type: "Comment", id: `LIST_${articleId}` },
-            ]
-          : [{ type: "Comment", id: `LIST_${articleId}` }],
-    }),
-    createComment: builder.mutation<Comment, CreateCommentRequest>({
-      query: ({ articleId, ...body }) => ({
-        url: `/articles/${articleId}/comments`,
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: (_result, _error, { articleId }) => [
-        { type: "Comment", id: `LIST_${articleId}` },
-      ],
-    }),
-  }),
-});
+export const getComments = async (articleId: string, params: any) => {
+  const queryParams = new URLSearchParams(params).toString();
+  return client(`/articles/${articleId}/comments?${queryParams}`);
+};
 
-export const { useGetCommentsQuery, useCreateCommentMutation } = commentsApi;
+export const useGetCommentsQuery = ({
+  articleId,
+  page = 1,
+  limit = 10,
+}: {
+  articleId: string;
+  page?: number;
+  limit?: number;
+}) => {
+  return useQuery({
+    queryKey: ["comments", articleId, page, limit],
+    queryFn: () => getComments(articleId, { page, limit }),
+    enabled: !!articleId,
+  });
+};
+
+export const createComment = async ({
+  articleId,
+  ...data
+}: CreateCommentRequest) => {
+  return client(`/articles/${articleId}/comments`, {
+    body: data,
+  } as {});
+};
+
+export const useCreateCommentMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createComment,
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", variables.articleId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["articles"] }); // Update comment counts on list if valid
+      queryClient.invalidateQueries({ queryKey: ["analytics"] }); // Update analytics
+    },
+  });
+};

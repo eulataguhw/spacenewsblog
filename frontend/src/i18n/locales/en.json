@@ -26,8 +26,8 @@
     "submitButton": "Post Comment",
     "submittingButton": "Posting...",
     "validation": {
-      "usernameRequired": "Username must be at least 3 characters",
-      "commentRequired": "Comment must be at least 10 characters",
+      "usernameRequired": "Username must be at least 2 characters",
+      "commentRequired": "Comment must be at least 2 characters",
       "commentMaxLength": "Comment must not exceed 500 characters"
     }
   },

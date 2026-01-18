@@ -1,10 +1,10 @@
-import { Provider } from "react-redux";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/react-query";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { store } from "@store/store";
 import "@/styles/index.css";
 import "@/i18n/i18n";
 import Home from "@pages/Home/Home";
@@ -36,11 +36,11 @@ function AppContent() {
 
 function App() {
   return (
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <ThemeContextProvider>
         <AppContent />
       </ThemeContextProvider>
-    </Provider>
+    </QueryClientProvider>
   );
 }
 

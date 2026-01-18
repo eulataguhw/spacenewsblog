@@ -7,6 +7,13 @@ vi.mock("@components/molecules/CommentForm/CommentForm", () => ({
   CommentForm: () => <div data-testid="mock-comment-form" />,
 }));
 
+// Mock react-i18next
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
 describe("CommentSection", () => {
   const mockComments = [
     {
@@ -26,7 +33,8 @@ describe("CommentSection", () => {
   it("should render comment count and list of comments", () => {
     render(<CommentSection articleId="1" comments={mockComments} />);
 
-    expect(screen.getByText(/comments \(2\)/i)).toBeInTheDocument();
+    // Check for i18n key with count interpolation
+    expect(screen.getByText(/commentSection\.title/i)).toBeInTheDocument();
     expect(screen.getByText("User 1")).toBeInTheDocument();
     expect(screen.getByText("Great article!")).toBeInTheDocument();
     expect(screen.getByText("User 2")).toBeInTheDocument();
@@ -35,7 +43,7 @@ describe("CommentSection", () => {
 
   it("should render empty state message when no comments", () => {
     render(<CommentSection articleId="1" comments={[]} />);
-    expect(screen.getByText(/no comments yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/commentSection\.noComments/i)).toBeInTheDocument();
   });
 
   it("should show loading spinner when isLoading is true", () => {
