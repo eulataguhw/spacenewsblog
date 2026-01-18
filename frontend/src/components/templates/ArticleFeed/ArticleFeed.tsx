@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Article } from "@app-types/article";
 import { Grid, Box, CircularProgress, Typography, Alert } from "@mui/material";
 import { ArticleCard } from "@components/organisms/ArticleCard/ArticleCard";
-import { FilterBar } from "@components/molecules/FilterBar";
+import { FilterBar } from "@components/molecules/FilterBar/FilterBar";
 import { useController } from "./useController";
 import { ARTICLE_FEED_CONSTANTS } from "./constants";
 

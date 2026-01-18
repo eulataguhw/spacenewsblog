@@ -48,7 +48,7 @@ Object.assign(vi.mocked((await import("@store/useAppStore")).useAppStore), {
   }),
 });
 
-vi.mock("@components/molecules/FilterBar", () => ({
+vi.mock("@components/molecules/FilterBar/FilterBar", () => ({
   FilterBar: () => <div data-testid="filter-bar">FilterBar</div>,
 }));
 

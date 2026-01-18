@@ -29,7 +29,6 @@ export const useGetArticlesQuery = (params: {
     queryKey: ["articles", params],
     queryFn: getArticles,
     getNextPageParam: (lastPage: ArticlesResponse) => {
-      // Assuming meta has hasNextPage or totalPages
       const { meta } = lastPage;
       const nextPage = meta.page + 1;
       return nextPage <= meta.totalPages ? nextPage : undefined;

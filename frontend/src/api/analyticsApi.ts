@@ -22,6 +22,5 @@ export const useGetAnalyticsQuery = () => {
   return useQuery({
     queryKey: ["analytics"],
     queryFn: getAnalytics,
-    // Add any specific options here if needed, e.g. refetch intervals
   });
 };

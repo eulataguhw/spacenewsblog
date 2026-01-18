@@ -7,7 +7,7 @@ import { Typography } from "@components/atoms/Typography/Typography";
 
 const StyledButton = styled(MuiButton, {
   shouldForwardProp: (prop) => prop !== "rounded",
-})<ButtonProps>(({ theme, rounded }) => ({
+})<ButtonProps>(({ rounded }) => ({
   borderRadius: rounded
     ? BUTTON_CONSTANTS.ROUNDED_BORDER_RADIUS
     : BUTTON_CONSTANTS.DEFAULT_BORDER_RADIUS,
