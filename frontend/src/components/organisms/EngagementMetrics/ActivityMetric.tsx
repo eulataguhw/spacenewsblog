@@ -24,6 +24,7 @@ export const ActivityMetric = ({ model }: ActivityMetricProps) => (
       variant="h3"
       color="primary.main"
       sx={{ fontWeight: 800, mt: 1 }}
+      data-testid="activity-metric-value"
     >
       {model.value}
       <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>

@@ -27,12 +27,13 @@ export const TopArticlesMetric = ({ model }: TopArticlesMetricProps) => (
     >
       {model.label}
     </Typography>
-    <Stack spacing={1}>
+    <Stack spacing={1} data-testid="top-articles-list">
       {model.items.map((article, index) => (
         <Box
           key={article.articleId}
           display="flex"
           justifyContent="space-between"
+          data-testid="top-article-item"
         >
           <Typography
             variant="body2"
@@ -43,9 +44,15 @@ export const TopArticlesMetric = ({ model }: TopArticlesMetricProps) => (
               maxWidth: "80%",
             }}
           >
-            {index + 1}. {article.title}
+            {index + 1}.{" "}
+            <span data-testid="article-title">{article.title}</span>
           </Typography>
-          <Typography variant="body2" color="primary.light" fontWeight={700}>
+          <Typography
+            variant="body2"
+            color="primary.light"
+            fontWeight={700}
+            data-testid="article-comment-count"
+          >
             {article.commentCount}
           </Typography>
         </Box>

@@ -53,6 +53,14 @@ export const getArticles = async (
       clearTimeout(timeoutId);
 
       if (!response.ok) {
+        if (response.status >= 500 && attempts > 1) {
+          console.warn(
+            `Server error ${response.status}. Retrying... (${attempts - 1} attempts left)`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          return fetchWithRetry(attempts - 1);
+        }
+
         const text = await response.text();
         console.error(`API Error Response: ${text}`);
         throw new Error(
@@ -63,11 +71,17 @@ export const getArticles = async (
       const data: SpaceNewsApiResponse = await response.json();
       return data;
     } catch (error) {
-      if (
+      const isRetryable =
         attempts > 1 &&
         error instanceof Error &&
-        (error.name === "TypeError" || (error as any).code === "ECONNRESET")
-      ) {
+        (error.name === "TypeError" ||
+          (error as any).code === "ECONNRESET" ||
+          error.name === "AbortError");
+
+      if (isRetryable) {
+        console.warn(
+          `Fetch failed: ${error instanceof Error ? error.message : "Unknown error"}. Retrying... (${attempts - 1} attempts left)`,
+        );
         // Wait a bit before retrying
         await new Promise((resolve) => setTimeout(resolve, 1000));
         return fetchWithRetry(attempts - 1);

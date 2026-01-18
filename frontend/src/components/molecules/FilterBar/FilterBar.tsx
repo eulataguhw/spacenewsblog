@@ -60,14 +60,24 @@ export const FilterBar = () => {
             label={translation(FILTER_BAR_CONSTANTS.START_DATE_LABEL)}
             value={startDate ? dayjs(startDate) : null}
             onChange={handleStartDateChange}
-            slotProps={{ textField: { sx: { flex: 1, minWidth: "150px" } } }}
+            slotProps={{
+              textField: {
+                sx: { flex: 1, minWidth: "150px" },
+                inputProps: { "data-testid": "start-date-picker" },
+              },
+            }}
           />
           <DatePicker
             label={translation(FILTER_BAR_CONSTANTS.END_DATE_LABEL)}
             value={endDate ? dayjs(endDate) : null}
             onChange={handleEndDateChange}
             maxDate={dayjs()}
-            slotProps={{ textField: { sx: { flex: 1, minWidth: "150px" } } }}
+            slotProps={{
+              textField: {
+                sx: { flex: 1, minWidth: "150px" },
+                inputProps: { "data-testid": "end-date-picker" },
+              },
+            }}
           />
           <FormControl sx={{ flex: 1, minWidth: "150px" }}>
             <InputLabel id="sort-order-label">
@@ -79,6 +89,7 @@ export const FilterBar = () => {
               value={sortOrder}
               label={translation(FILTER_BAR_CONSTANTS.SORT_LABEL)}
               onChange={handleSortChange}
+              data-testid="sort-select"
             >
               {FILTER_BAR_CONSTANTS.SORT_OPTIONS.map((option) => (
                 <MenuItem key={option.value} value={option.value}>

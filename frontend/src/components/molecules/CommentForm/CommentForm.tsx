@@ -40,6 +40,7 @@ export const CommentForm = ({ articleId }: CommentFormProps) => {
             {...register("username")}
             error={!!errors.username}
             helperText={errors.username?.message}
+            inputProps={{ "data-testid": "comment-username-input" }}
           />
           <TextField
             label={commentLabel}
@@ -51,6 +52,7 @@ export const CommentForm = ({ articleId }: CommentFormProps) => {
             disabled={isLoading}
             {...register("comment")}
             error={!!errors.comment}
+            inputProps={{ "data-testid": "comment-text-input" }}
             helperText={
               <Box
                 component="span"
@@ -68,6 +70,7 @@ export const CommentForm = ({ articleId }: CommentFormProps) => {
               variant="contained"
               endIcon={<SendIcon />}
               disabled={isLoading || !isValid}
+              data-testid="comment-submit-button"
             >
               {isLoading ? submittingButton : submitButton}
             </Button>

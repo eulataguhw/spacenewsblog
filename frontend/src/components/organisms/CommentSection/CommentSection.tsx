@@ -49,11 +49,13 @@ export const CommentSection = ({
                   background: "rgba(255, 255, 255, 0.03)",
                   border: "1px solid rgba(255, 255, 255, 0.05)",
                 }}
+                data-testid="comment-item"
               >
                 <Stack direction="row" justifyContent="space-between" mb={1}>
                   <Typography
                     variant="subtitle2"
                     sx={{ color: "primary.light", fontWeight: 700 }}
+                    data-testid="comment-username"
                   >
                     {comment.username}
                   </Typography>
@@ -61,7 +63,11 @@ export const CommentSection = ({
                     {formatDate(comment.created_at)}
                   </Typography>
                 </Stack>
-                <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
+                <Typography
+                  variant="body2"
+                  sx={{ lineHeight: 1.6 }}
+                  data-testid="comment-body"
+                >
                   {comment.comment}
                 </Typography>
               </Box>

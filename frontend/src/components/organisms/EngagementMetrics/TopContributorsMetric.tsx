@@ -28,15 +28,23 @@ export const TopContributorsMetric = ({
     >
       {model.label}
     </Typography>
-    <Grid container spacing={1}>
+    <Grid container spacing={1} data-testid="top-contributors-list">
       {model.items.map((user) => (
-        <Grid size={{ xs: 12 }} key={user.username}>
+        <Grid
+          size={{ xs: 12 }}
+          key={user.username}
+          data-testid="contributor-item"
+        >
           <Box
             display="flex"
             justifyContent="space-between"
             alignItems="center"
           >
-            <Typography variant="body2" fontWeight={600}>
+            <Typography
+              variant="body2"
+              fontWeight={600}
+              data-testid="contributor-username"
+            >
               {user.username}
             </Typography>
             <Paper
@@ -47,7 +55,11 @@ export const TopContributorsMetric = ({
                 borderRadius: 1,
               }}
             >
-              <Typography variant="caption" fontWeight={700}>
+              <Typography
+                variant="caption"
+                fontWeight={700}
+                data-testid="contributor-comment-count"
+              >
                 {user.commentCount}
               </Typography>
             </Paper>

@@ -11,8 +11,9 @@ export const SearchBar = (props: SearchBarProps) => {
   return (
     <Input
       value={value}
-      onChange={handleChange as any} // MUI TextField onChange signature mismatch workaround
+      onChange={handleChange as any}
       placeholder={placeholder || SEARCH_BAR_CONSTANTS.DEFAULT_PLACEHOLDER}
+      inputProps={{ "data-testid": "search-input" }}
       slotProps={{
         input: {
           startAdornment: (

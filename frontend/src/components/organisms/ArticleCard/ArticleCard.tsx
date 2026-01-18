@@ -35,7 +35,7 @@ export const ArticleCard = ({ article: propArticle }: ArticleCardProps) => {
   const { handleCardClick } = useController(propArticle);
 
   return (
-    <StyledCard onClick={handleCardClick}>
+    <StyledCard onClick={handleCardClick} data-testid="article-card">
       {article.image_url && (
         <CardMedia
           component="img"
