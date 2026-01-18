@@ -1,27 +1,10 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-}
-
-model Article {
-  id           String    @id @default(uuid())
-  external_id  String    @unique
-  title        String
-  summary      String?
-  image_url    String?
-  published_at DateTime
-  source       String
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
-  comments     Comment[]
-
-  @@index([published_at(sort: Desc)])
-  @@index([title])
-  @@index([source])
-  @@map("articles")
 }
 
 model Comment {
@@ -32,7 +15,6 @@ model Comment {
   comment             String
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
-  article             Article  @relation(fields: [article_id], references: [id])
 
   @@index([article_id, created_at(sort: Desc)])
   @@index([username_normalized])

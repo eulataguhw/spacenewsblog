@@ -30,6 +30,7 @@ pid
 
 # Prisma
 /prisma/migrations/*/migration.sql
+/prisma/generated
 
 # OS
 .DS_Store

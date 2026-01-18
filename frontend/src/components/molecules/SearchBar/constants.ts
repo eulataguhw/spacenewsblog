@@ -1,0 +1,4 @@
+export const SEARCH_BAR_CONSTANTS = {
+  DEBOUNCE_TIME: 500,
+  DEFAULT_PLACEHOLDER: "Search...",
+};
